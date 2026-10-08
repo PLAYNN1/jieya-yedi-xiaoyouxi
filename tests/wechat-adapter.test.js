@@ -30,7 +30,7 @@ vm.runInNewContext(fs.readFileSync(require.resolve('../game.js'), 'utf8'), sandb
 assert.equal(audios.length, 12); assert.equal(canvas.width, 780, 'DPR capped at 2');
 assert.equal(audios[0].volume, 0.14); assert.equal(audios[3].volume, 0.52);
 assert.equal(app.view().top, 88, 'capsule safe area reserved');
-const view = app.view(), point = { identifier: 1, clientX: view.left + 195 * view.scale, clientY: view.top + 640 * view.scale };
+const view = app.view(), point = { identifier: 1, clientX: view.left + 195 * view.scale, clientY: view.top + 400 * view.scale };
 handlers.TouchStart({ changedTouches: [point] });
 handlers.TouchStart({ changedTouches: [{ ...point, identifier: 2 }] });
 handlers.TouchEnd({ changedTouches: [{ ...point, identifier: 2 }] });

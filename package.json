@@ -1,5 +1,5 @@
 {
-  "name": "yedi", "version": "1.3.3", "private": true,
+  "name": "yedi", "version": "1.3.4", "private": true,
   "description": "解压液滴小游戏：随机颜色、弹性膜悬挂、融合坠落与随机障碍反弹。原生 Canvas 2D，无运行依赖。",
   "license": "MIT",
   "scripts": { "preview": "node tools/serve.js", "build": "node tools/build-web.js", "android:sync": "node tools/sync-android.js", "test": "node tests/simulation.test.js && node tests/session.test.js && node tests/challenge.test.js && node tests/obstacles.test.js && node tests/input.test.js && node tests/wechat-adapter.test.js", "audio": "node tools/make-audio.js" }

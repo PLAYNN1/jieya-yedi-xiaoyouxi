@@ -70,21 +70,23 @@
       if(p.y>26&&p.y<76&&p.x>230){if(p.x<306)overlay('volume');else overlay('pause');return;}
       if(p.x>278&&p.y>680&&p.y<724){armMix();return;}
       if(p.y>753&&p.y<801){if(p.x<140)overlay('help');else if(p.x>264)overlay('restart');else overlay('settings');return;}
-      if(p.y>305&&p.y<674){
-        // Launcher motion and aim share the gesture. Aim uses displacement from
-        // the initial grip, so following the finger never resets the angle.
-        pressed={mode:p.y>=592?'move':'aim',x:p.x,offset:Math.hypot(p.x-ui.launchX,p.y-640)<=32?ui.launchX-p.x:0};
+      if(p.y>229&&p.y<674){
+        // The visible line at y=591 separates position from direction control.
+        pressed={mode:p.y>=591?'move':'aim',offset:Math.hypot(p.x-ui.launchX,p.y-640)<=32?ui.launchX-p.x:0};
         ui.aiming=true;move(x,y);
       }
     }
     function move(x,y){if(!pressed)return;const p=point(x,y);if(pressed.slider!=null){setSlider(pressed.slider,p.x);return;}
       if(pressed.volume){setVolume((p.x-62)/266);return;}
-      if(pressed.mode==='move')ui.launchX=model.clamp(p.x+pressed.offset,55,335);
-      const aimDelta=pressed.mode==='move'?p.x-pressed.x:p.x-ui.launchX;
-      ui.targetX=sim.aim(ui.launchX+aimDelta*411/Math.max(90,640-p.y));
+      const mode=p.y>=591?'move':'aim';
+      if(mode!==pressed.mode){pressed.mode=mode;if(mode==='move')pressed.offset=ui.launchX-p.x;}
+      if(mode==='move'){
+        const launchX=model.clamp(p.x+pressed.offset,55,335);
+        ui.targetX+=launchX-ui.launchX;ui.launchX=launchX;
+      }else ui.targetX=ui.launchX+model.clamp((p.x-ui.launchX)*411/Math.max(90,640-p.y),-655,655);
     }
     function up(x,y){if(pressed&&pressed.volume){if(Number.isFinite(x)&&Number.isFinite(y))move(x,y);if(!ui.muted)host.sound('merge',ui.volume);}
-      else if(pressed&&pressed.slider==null){if(Number.isFinite(x)&&Number.isFinite(y))move(x,y);fire();}cancel();}
+      else if(pressed&&pressed.slider==null){if(Number.isFinite(x)&&Number.isFinite(y))move(x,y);if(pressed.mode==='aim')fire();}cancel();}
     function cancel(){if(pressed&&pressed.volume)persist();pressed=null;ui.aiming=false;}
     function draw(){c.setTransform(1,0,0,1,0,0);c.fillStyle='#edf3f1';c.fillRect(0,0,canvas.width,canvas.height);
       c.setTransform(dpr*scale,0,0,dpr*scale,dpr*left,dpr*top);c.save();c.beginPath();c.rect(0,0,390,844);c.clip();renderer.render(c,sim,ui,model.SPECS,session,model);c.restore();}

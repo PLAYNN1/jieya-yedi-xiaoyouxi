@@ -88,7 +88,7 @@
     text(c,'接下来',170,713,10,MUTED,'right');
     ui.queue.slice(1).forEach((index,i)=>circle(c,195+i*29,709,8,'rgb('+model.PALETTE[index].join(',')+')'));
     box(c,283,685,79,35,ui.mixArmed?'#dcece5':'#eaf0ed',10);text(c,(ui.mixArmed?'已准备 ':'调色 ')+session.charges,322,707,11,session.charges?INK:MUTED,'center');
-    text(c,ui.toastTime>0?ui.toast:'拖动移动并瞄准 · 松手发射',195,738,11,MUTED,'center');
+    text(c,ui.toastTime>0?ui.toast:'线下调位置 · 线上瞄准，松手发射',195,738,11,MUTED,'center');
     line(c,28,753,362,753,'#e1e9e7');
     text(c,'玩法',65,784,12);text(c,'设置',195,784,12);text(c,'重新开始',326,784,12,INK,'center');
     text(c,'慢慢来。每一滴，都有回响。',195,824,10,MUTED,'center');
@@ -124,7 +124,7 @@
         box(c,24,294,342,420,'#fff',20);
         if(ui.overlay==='help'){
           text(c,'让每一滴，慢慢汇合',40,336,21);
-          const lines=['拖动移动并瞄准，松手沿虚线发射。','同色融合，异色下挂；切断带落整支。','调色 / C：下一发可混合两种三原色。','落下每 3 滴或完成挑战可补充调色。','300 分起，每增 500 分随机换障碍。','虚线是预告，实心挡板可以借力反弹。','借板命中 +15，连续借板再加 +10。','超载再射 3 滴将崩落扣分，仍可继续。'];
+          const lines=['线下调位置不发射；线上瞄准松手发射。','同色融合，异色下挂；切断带落整支。','调色 / C：下一发可混合两种三原色。','落下每 3 滴或完成挑战可补充调色。','300 分起，每增 500 分随机换障碍。','虚线是预告，实心挡板可以借力反弹。','借板命中 +15，连续借板再加 +10。','超载再射 3 滴将崩落扣分，仍可继续。'];
           lines.forEach((s,i)=>text(c,s,40,379+i*28,12,i===7?INK:MUTED));
         }else{
           text(c,'停一下，也很好',40,340,24);text(c,session.score,40,412,43);text(c,'分',142,410,13,MUTED);
