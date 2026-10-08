@@ -8,7 +8,7 @@ android {
         applicationId 'io.github.playnn1.yedi'
         minSdk 26
         targetSdk 36
-        versionCode 10302
+        versionCode 10303
         versionName gamePackage.version
     }
     buildFeatures { buildConfig true }
