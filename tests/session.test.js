@@ -12,6 +12,10 @@ s.event('miss',{released:true});assert.equal(s.combo,7);
 s.event('miss');assert.equal(s.combo,0);assert.equal(s.multiplier,1);assert.equal(s.score,235);
 assert.equal(readSave({version:1,best:NaN}).best,0);
 assert.deepEqual(readSave(null).records,[]);
+assert.equal(readSave({version:1}).volume,1,'old saves keep the previous full volume');
+assert.equal(readSave({version:1,volume:.35}).volume,.35);
+assert.equal(readSave({version:1,volume:0}).muted,true);
+assert.equal(readSave({version:1,volume:Infinity}).volume,1);
 const sim=new Simulation();
 function advance(t){for(let i=0;i<Math.round(t*120);i++)sim.update(1/120);}
 sim.fire(195,195,1,{mix:true});advance(.8);

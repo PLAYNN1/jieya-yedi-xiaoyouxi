@@ -1,0 +1,36 @@
+'use strict';
+const assert=require('node:assert/strict'),{createApp}=require('../src/app');
+const ctx=new Proxy({},{get:(obj,key)=>obj[key]||(()=>{})});
+let frame=null,savedData=null,liveMaster=1;const sounds=[];
+const host={requestFrame:fn=>{frame=fn;return 1;},cancelFrame:()=>{},unlockAudio:()=>{},stopAudio:()=>{},sound:(name,volume)=>sounds.push({name,volume}),setVolume:v=>{liveMaster=v;},save:data=>{savedData=JSON.parse(JSON.stringify(data));},random:()=>0};
+const app=createApp({getContext:()=>ctx},host);
+app.resize(390,844,1);app.start();
+let time=0;function wait(seconds){for(let i=0;i<seconds*60;i++){frame(time);time+=1000/60;}}
+const beforeQueue=app.ui.queue.slice();
+app.down(205,640);assert.equal(app.ui.launchX,195,'touching the launcher edge preserves the grip');
+wait(1.2);app.key(' ');assert.equal(app.session.shots,0,'holding never auto-fires or accepts a keyboard shot');
+for(const x of [206,207.5,211,249]){app.move(x,640);assert.equal(app.ui.launchX,x-10,'follow even sub-threshold motion without a dead zone');}
+assert.deepEqual(app.ui.queue,beforeQueue);assert.equal(app.ui.targetX,app.ui.launchX);
+app.up(270,640);assert.equal(app.session.shots,1);assert.equal(app.sim.shots[0].x,260,'release position is applied before firing');
+app.up();assert.equal(app.session.shots,1,'one release cannot fire twice');
+wait(.3);app.down(260,640);app.move(295,640);app.move(340,420);
+assert.equal(app.ui.launchX,295,'upward aiming keeps the launcher at its chosen position');
+assert(app.ui.targetX>app.ui.launchX);wait(.8);assert.equal(app.session.shots,1);
+app.up();assert.equal(app.session.shots,2);
+wait(.3);app.down(295,640);app.move(-100,640);assert.equal(app.ui.launchX,55);app.move(500,640);assert.equal(app.ui.launchX,335);app.cancel();app.up();assert.equal(app.session.shots,2);
+app.down(335,640);app.overlay('pause');app.up();assert.equal(app.session.shots,2,'opening a panel cancels the gesture');app.overlay(null);
+app.down(335,640);app.pause();app.up();assert.equal(app.session.shots,2,'backgrounding cancels the gesture');
+app.resize(375,667,2,20,12);const v=app.view(),screen=(x,y)=>[v.left+x*v.scale,v.top+y*v.scale];
+app.down(...screen(335,640));app.move(...screen(180,640));assert(Math.abs(app.ui.launchX-180)<1e-9,'scaled and inset screens track correctly');
+app.up(...screen(160,640));assert.equal(app.session.shots,3);assert(Math.abs(app.sim.shots.at(-1).x-160)<1e-9);
+app.resize(390,844,1);app.down(275,48);app.up();assert.equal(app.ui.overlay,'volume');
+const shotCount=app.session.shots;app.down(328,480);app.move(128.5,480);app.up(128.5,480);
+assert.equal(app.ui.volume,.25);assert.equal(liveMaster,.25);assert.equal(savedData.volume,.25);
+assert.deepEqual(sounds.at(-1),{name:'merge',volume:.25});assert.equal(app.session.shots,shotCount,'volume slider auditions without firing a drop');
+app.down(100,550);app.up();assert.equal(app.ui.muted,true);assert.equal(liveMaster,0);
+app.down(100,550);app.up();assert.equal(app.ui.muted,false);assert.equal(app.ui.volume,.25);
+app.down(62,480);app.up();assert.equal(app.ui.muted,true);assert.equal(savedData.volume,0);
+const restored=createApp({getContext:()=>ctx},Object.assign({},host,{load:()=>savedData}));assert.equal(restored.ui.volume,0);assert.equal(restored.ui.muted,true);
+app.down(100,550);app.up();assert.equal(app.ui.volume,.5,'restoring silence at zero gives audible volume');
+app.reset();assert.equal(app.ui.volume,.5,'game reset keeps sound preferences');
+console.log('PASS: hold/release drag, grip offset, aiming, cancellation, mobile scaling, volume audition, mute restoration and saved volume.');

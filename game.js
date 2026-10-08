@@ -25,9 +25,10 @@ const app = createApp(canvas, {
   cancelFrame: id => cancelAnimationFrame(id),
   unlockAudio: function () { app.ui.audioError = audioFailed; },
   stopAudio,
-  sound: function (name) {
+  setVolume: master => Object.keys(pools).forEach(name=>pools[name].forEach(a=>{a.volume=volumes[name]*master;})),
+  sound: function (name,master) {
     const pool = pools[name]; if (!pool || !pool.length || audioFailed) return;
-    const audio = pool[indices[name]++ % pool.length]; audio.stop(); audio.play();
+    const audio = pool[indices[name]++ % pool.length]; audio.volume=volumes[name]*(Number.isFinite(master)?master:1);audio.stop(); audio.play();
   }
 });
 function fit() {
@@ -52,7 +53,8 @@ wx.onTouchMove(event => {
   const p = event.touches.find(t => t.identifier === activeTouch); if (p) app.move(p.clientX, p.clientY);
 });
 wx.onTouchEnd(event => {
-  if (event.changedTouches.some(t => t.identifier === activeTouch)) { app.up(); activeTouch = null; }
+  const p=event.changedTouches.find(t=>t.identifier===activeTouch);
+  if (p) { app.up(p.clientX,p.clientY); activeTouch = null; }
 });
 wx.onTouchCancel(() => { app.cancel(); activeTouch = null; });
 wx.onHide(() => { app.pause(); activeTouch = null; });

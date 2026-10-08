@@ -4,9 +4,11 @@
 
 ## 安装
 
-在 [Releases](https://github.com/PLAYNN1/jieya-yedi-xiaoyouxi/releases) 下载 `jieya-yedi-v1.3.1.apk`，支持 Android 8.0 及以上。打开后按系统提示允许当前下载来源安装。应用名称为“解压液滴小游戏”。
+在 [Releases](https://github.com/PLAYNN1/jieya-yedi-xiaoyouxi/releases) 下载 `jieya-yedi-v1.3.2.apk`，支持 Android 8.0 及以上。打开后按系统提示允许当前下载来源安装。应用名称为“解压液滴小游戏”。沿用 v1.3.1 的维护者签名，可以覆盖安装更新。
 
 首次点击解锁声音。切后台停止帧循环和音效；返回键先暂停，暂停后再返回可确认退出。最高分保存在应用内部，不与网页版同步，卸载或清除应用数据会清除纪录。
+
+按住发射台左右拖动，上划瞄准，松手射出一滴；长按不自动连发。右上角音量按钮可拖动滑块调节响度、试听或静音，音量选择会自动保存。
 
 ## 构建
 

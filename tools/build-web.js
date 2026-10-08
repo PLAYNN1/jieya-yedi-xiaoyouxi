@@ -11,4 +11,6 @@ for (const file of files) {
   fs.copyFileSync(path.join(root, file), target);
 }
 fs.writeFileSync(path.join(output, '.nojekyll'), '');
+const entry=path.join(output,'index.html'),version=require('../package.json').version;
+fs.writeFileSync(entry,fs.readFileSync(entry,'utf8').replace(/<script src="([^"?]+)(?:\?[^"\s]*)?"><\/script>/g,(_,file)=>'<script src="'+file+'?v='+encodeURIComponent(version)+'"></script>'));
 console.log('Static website ready in dist/ (no server or installation needed by visitors).');

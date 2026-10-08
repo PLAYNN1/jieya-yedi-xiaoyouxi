@@ -54,7 +54,7 @@
   }
   function render(c,sim,ui,specs,session,model){
     c.fillStyle='#f7faf9';c.fillRect(0,0,390,844);
-    text(c,'Y E D I',28,53,13);text(c,ui.muted?'静音':'声音',275,53,12,INK,'center');text(c,'暂停',340,53,12,INK,'center');circle(c,253,48,2.5,ui.muted?'#b4c0c4':BLUE);
+    text(c,'Y E D I',28,53,13);text(c,ui.muted?'静音':'音量',275,53,12,INK,'center');text(c,'暂停',340,53,12,INK,'center');circle(c,253,48,2.5,ui.muted?'#b4c0c4':BLUE);
     text(c,session.mode==='practice'?'自由练习':'此刻的积累',28,87,11,MUTED);
     const score=String(session.score);text(c,score,27,136,score.length>9?32:43);
     text(c,'个人最高',362,100,10,MUTED,'right');text(c,session.mode==='classic'?ui.best:'—',362,128,19,INK,'right');
@@ -88,7 +88,7 @@
     text(c,'接下来',170,713,10,MUTED,'right');
     ui.queue.slice(1).forEach((index,i)=>circle(c,195+i*29,709,8,'rgb('+model.PALETTE[index].join(',')+')'));
     box(c,283,685,79,35,ui.mixArmed?'#dcece5':'#eaf0ed',10);text(c,(ui.mixArmed?'已准备 ':'调色 ')+session.charges,322,707,11,session.charges?INK:MUTED,'center');
-    text(c,ui.toastTime>0?ui.toast:'点按发射 · 长按连续 · 拖动瞄准',195,738,11,MUTED,'center');
+    text(c,ui.toastTime>0?ui.toast:'左右拖台 · 上划瞄准 · 松手发射',195,738,11,MUTED,'center');
     line(c,28,753,362,753,'#e1e9e7');
     text(c,'玩法',65,784,12);text(c,'设置',195,784,12);text(c,'重新开始',326,784,12,INK,'center');
     text(c,'慢慢来。每一滴，都有回响。',195,824,10,MUTED,'center');
@@ -97,7 +97,14 @@
     if(ui.debug)text(c,ui.fps+' FPS',362,208,10,MUTED,'right');
     if(ui.overlay){
       c.fillStyle='rgba(238,244,241,0.82)';c.fillRect(0,196,390,648);
-      if(ui.overlay==='settings'){
+      if(ui.overlay==='volume'){
+        box(c,24,360,342,258,'#fff',20);text(c,'音效音量',40,400,21);text(c,'关闭',330,399,12,INK,'center');
+        text(c,'音量',40,438,12,MUTED);text(c,Math.round(ui.volume*100)+'%'+(ui.muted?' · 静音':''),347,438,13,INK,'right');
+        line(c,62,480,328,480,'#e1e9e7',5);line(c,62,480,62+266*ui.volume,480,BLUE,5);circle(c,62+266*ui.volume,480,10,BLUE);
+        text(c,'0',62,508,10,MUTED,'center');text(c,'100',328,508,10,MUTED,'center');
+        button(c,ui.muted?'恢复声音':'静音',40,525,146,false);button(c,'完成',204,525,146,true);
+        text(c,'拖动滑块，松手试听 · 自动保存',195,599,11,MUTED,'center');
+      }else if(ui.overlay==='settings'){
         box(c,20,292,350,450,'#fff',20);text(c,'设置',40,332,20);text(c,'完成',330,330,12,INK,'center');
         button(c,session.mode==='classic'?'进入练习 · 重新开始':'回到计分 · 重新开始',38,364,314,false);
         text(c,session.mode==='classic'?'计分使用标准物理，练习可自由调节':'练习分数不写入个人最高',40,437,11,MUTED);
@@ -108,7 +115,7 @@
         });
         line(c,40,644,350,644,'#edf2f0');text(c,'最近记录',40,670,11,MUTED);
         const records=ui.records.slice(0,3);text(c,records.length?records.map(r=>r.score+' 分').join('   /   '):'下一次重新开始时留下记录',40,696,12,INK);
-        text(c,'声音用右上角按钮或 M 键切换',40,724,10,MUTED);
+        text(c,'右上角音量可调节，M 快捷静音',40,724,10,MUTED);
       }else if(ui.overlay==='restart'){
         box(c,24,319,342,284,'#fff',20);text(c,'重新开始这一场？',195,371,22,INK,'center');
         text(c,'当前 '+session.score+' 分',195,419,18,INK,'center');text(c,'最高分会保留，本场计分存入最近记录。',195,454,11,MUTED,'center');
@@ -117,7 +124,7 @@
         box(c,24,294,342,420,'#fff',20);
         if(ui.overlay==='help'){
           text(c,'让每一滴，慢慢汇合',40,336,21);
-          const lines=['同色融合，异色向下挂，遮挡上层。','拖动借墙绕射，切断上层带落整支。','调色 / C：下一发可混合两种三原色。','落下每 3 滴或完成挑战可补充调色。','300 分起，每增 500 分随机换障碍。','虚线是预告，实心挡板可以借力反弹。','借板命中 +15，连续借板再加 +10。','超载再射 3 滴将崩落扣分，仍可继续。'];
+          const lines=['拖台移动，上划瞄准，松手才发射。','同色融合，异色下挂；切断带落整支。','调色 / C：下一发可混合两种三原色。','落下每 3 滴或完成挑战可补充调色。','300 分起，每增 500 分随机换障碍。','虚线是预告，实心挡板可以借力反弹。','借板命中 +15，连续借板再加 +10。','超载再射 3 滴将崩落扣分，仍可继续。'];
           lines.forEach((s,i)=>text(c,s,40,379+i*28,12,i===7?INK:MUTED));
         }else{
           text(c,'停一下，也很好',40,340,24);text(c,session.score,40,412,43);text(c,'分',142,410,13,MUTED);

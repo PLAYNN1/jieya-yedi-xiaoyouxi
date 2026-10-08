@@ -50,8 +50,9 @@
     }
   }
   function readSave(data) {
-    if (!data || typeof data !== 'object' || data.version !== 1) return { version: 1, best: 0, muted: false, records: [] };
-    return { version: 1, best: valid(data.best), muted: data.muted === true,
+    if (!data || typeof data !== 'object' || data.version !== 1) return { version: 1, best: 0, muted: false, volume: 1, records: [] };
+    const volume=Number.isFinite(data.volume)&&data.volume>=0&&data.volume<=1?data.volume:1;
+    return { version: 1, best: valid(data.best), muted: data.muted === true||volume===0, volume,
       records: Array.isArray(data.records) ? data.records.slice(0, 5).filter(r => r && r.mode === 'classic').map(r => ({
         score: valid(r.score), drops: valid(r.drops), maxCombo: valid(r.maxCombo), hits: valid(r.hits), shots: valid(r.shots), elapsed: valid(r.elapsed), mode: 'classic'
       })) : [] };

@@ -8,7 +8,7 @@ android {
         applicationId 'io.github.playnn1.yedi'
         minSdk 26
         targetSdk 36
-        versionCode 10301
+        versionCode 10302
         versionName gamePackage.version
     }
     buildFeatures { buildConfig true }
@@ -27,7 +27,7 @@ tasks.register('syncGameAssets', Exec) {
     workingDir '../..'
     commandLine 'node', 'tools/sync-android.js'
     inputs.files(fileTree('../../src'),fileTree('../../audio'),fileTree('../../assets'))
-    inputs.files('../../index.html','../../preview.js','../../manifest.webmanifest','../../LICENSE','../../THIRD_PARTY_NOTICES.md','../../licenses/APACHE-2.0.txt','../../tools/build-web.js','../../tools/sync-android.js')
+    inputs.files('../../index.html','../../preview.js','../../package.json','../../manifest.webmanifest','../../LICENSE','../../THIRD_PARTY_NOTICES.md','../../licenses/APACHE-2.0.txt','../../tools/build-web.js','../../tools/sync-android.js')
     outputs.dir layout.buildDirectory.dir('generated/gameAssets')
 }
 tasks.named('preBuild').configure { dependsOn 'syncGameAssets' }
