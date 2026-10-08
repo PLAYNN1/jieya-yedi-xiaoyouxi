@@ -1,0 +1,34 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {Director,sweep}=require('../src/obstacles');
+const {Simulation}=require('../src/simulation');
+const {Session}=require('../src/session');
+let seed=91827;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+const director=new Director(random);
+director.update(.01,299,[],[]);assert.equal(director.pending,null);
+director.update(.01,300,[],[]);assert(director.pending);assert.equal(director.active.length,0);
+const first=director.pending.name,board=director.pending.boards[0];
+director.update(2,300,[],[{x:board.x,y:board.y,r:12}]);assert.equal(director.active.length,0,'preview waits for an in-flight drop');
+director.update(.01,300,[],[]);assert.equal(director.band,1);
+director.update(.01,800,[],[]);assert.notEqual(director.pending.name,first);assert.equal(director.pending.boards.length,2);
+director.update(2,800,[],[]);director.update(.1,100,[],[]);assert.equal(director.band,2,'a penalty cannot undo difficulty');
+director.reset();assert.equal(director.band,0);assert.equal(director.active.length,0);
+const b={x:195,y:400,w:100,h:14,vx:0};
+const hit=sweep({x:195,y:600,r:12},0,-400,b);assert(hit&&hit.t>0&&hit.t<1);assert.equal(hit.ny,1);
+const corner=sweep({x:260,y:425,r:12},-30,-30,b);assert(corner&&corner.nx>0&&corner.ny>0);
+const sim=new Simulation();sim.obstacles.active=[b];
+const shot={x:195,y:600,r:12,vx:0,vy:-3000,pigmentShot:true};
+sim.travel(shot,.1,null,false);assert(shot.vy>0);assert.equal(shot.obstacleBounces,1);assert(shot.y>419);
+const points=sim.trajectory(195,195);assert(points.some((p,i)=>i&&p.y>points[i-1].y),'aim preview includes board rebound');
+const score=new Session();assert.equal(score.event('merge',{obstacle:1}),25);assert.equal(score.event('merge',{obstacle:2,bank:true}),45);
+const peak=score.peakScore;score.event('overload');assert.equal(score.peakScore,peak);
+// Detached liquid must clear a horizontal obstacle and remain in the mass ledger.
+sim.obstacles.active=[{x:195,y:400,w:120,h:15,vx:0,baseX:195,amplitude:0,phase:0,flash:0}];
+sim.fire(195,195,0); // blocked shot stays out of the suspension tree
+for(let i=0;i<360;i++)sim.update(1/120);
+assert.equal(sim.hits,0);assert(Math.abs(sim.snapshot().accountedMass-sim.snapshot().expectedMass)<1e-6);
+sim.detachBranch(sim.primary,false);
+for(let i=0;i<1200&&sim.falling.length;i++)sim.update(1/120);
+assert.equal(sim.falling.length,0,'fallen drops roll off boards into the collector');
+assert(Math.abs(sim.snapshot().accountedMass-sim.snapshot().expectedMass)<1e-6);
+console.log('PASS: score bands, varied layouts, safe previews, swept board/corner collisions, reflected aim, bank bonus and falling-liquid conservation.');

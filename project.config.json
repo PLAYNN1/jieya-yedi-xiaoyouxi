@@ -1,0 +1,19 @@
+{
+  "description": "液滴 · 弹性膜最小可验证原型",
+  "projectname": "YEDI",
+  "appid": "touristappid",
+  "compileType": "game",
+  "setting": { "es6": true, "minified": false, "urlCheck": true },
+  "packOptions": {
+    "ignore": [
+      { "type": "folder", "value": "tools" },
+      { "type": "folder", "value": "tests" },
+      { "type": "folder", "value": "outputs" },
+      { "type": "folder", "value": "work" },
+      { "type": "file", "value": "preview.html" },
+      { "type": "file", "value": "preview.js" },
+      { "type": "file", "value": "README.md" },
+      { "type": "file", "value": "package.json" }
+    ]
+  }
+}

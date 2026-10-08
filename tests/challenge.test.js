@@ -1,0 +1,20 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {Simulation,partType}=require('../src/simulation');
+const {Session}=require('../src/session');
+function advance(sim,t){for(let i=0;i<t*120;i++)sim.update(1/120);}
+const sim=new Simulation();sim.fire(195,195,2);advance(sim,.8);
+assert.equal(sim.drops.length,2);const root=sim.primary,red=sim.drops[1];
+assert.equal(red.parentId,root.id);assert.equal(partType(red.pigment),2);assert.equal(root.mass,676);
+sim.fire(195,195,0);advance(sim,.8);
+assert.equal(root.mass,676,'lower red must occlude blue root');
+assert.equal(sim.drops.length,3);assert.equal(sim.drops[2].parentId,red.id);
+const before=sim.snapshot();sim.detachBranch(red,false);advance(sim,.02);
+assert.equal(sim.drops.length,1);assert.equal(sim.primary.id,root.id);
+assert(Math.abs(sim.snapshot().accountedMass-before.accountedMass)<1e-6,'cascade must conserve mass');
+const score=new Session();for(let i=0;i<3;i++)score.event('merge',{bank:true});
+assert.equal(score.goalIndex,1);assert.equal(score.charges,2);
+score.event('detach',{count:3,rescue:true});assert.equal(score.goalIndex,2);assert.equal(score.charges,3);
+score.event('merge',{mixed:true});assert.equal(score.goalIndex,3);
+const previous=score.score;score.event('overload');assert(score.score<previous);assert.equal(score.combo,0);
+console.log('PASS: lower-node occlusion, heterogeneous suspension, cascade mass, rotating challenges, dye charges and overload penalty.');

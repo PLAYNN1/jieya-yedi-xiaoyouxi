@@ -1,0 +1,13 @@
+project.private.config.json
+node_modules/
+work/
+outputs/
+dist/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
+!.env.example
+*.pem
+*.key
