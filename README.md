@@ -1,12 +1,24 @@
 # 解压液滴小游戏
 
-一个无关卡、无倒计时、可以一直玩的液滴解压游戏。原生 JavaScript / Canvas 2D，清爽平面画面，随机出滴、左右反弹、三原色混合、异色黏连、多点悬挂、颈缩、断裂与膜线回弹，搭配参考录音制作的黏性液体音效。
+一个以**手机竖屏触控**为主、无关卡、无倒计时的液滴解压小游戏，提供**网页版**和**Android APK**。清爽平面画面，随机出滴、左右反弹、三原色混合、异色黏连、多点悬挂、颈缩、断裂与膜线回弹，搭配黏性液体音效。
 
-当前版本 **1.3.0 · 随机障碍版**，项目代号 YEDI。支持浏览器鼠标、触屏和键盘操作，无需账号、后台服务或第三方运行依赖。
+当前版本 **1.3.1 · 手机封装版**，项目代号 YEDI。游戏使用 JavaScript / Canvas 2D；安卓版以轻量 WebView 外壳内置同一套游戏与音效，无需账号或后台服务。
+
+## 直接游玩 / 下载
+
+| 方式 | 入口 | 说明 |
+| --- | --- | --- |
+| 手机网页版 | [点这里直接玩](https://playnn1.github.io/jieya-yedi-xiaoyouxi/) | Android、iPhone 均可用浏览器打开，推荐竖屏；电脑也可鼠标试玩 |
+| Android APK | [下载最新版安装包](https://github.com/PLAYNN1/jieya-yedi-xiaoyouxi/releases/latest/download/jieya-yedi-v1.3.1.apk) | Android 8.0 及以上，内置资源，安装后离线游玩 |
+| 全部发布文件 | [Releases](https://github.com/PLAYNN1/jieya-yedi-xiaoyouxi/releases) | APK、校验文件和可自行部署的网页版压缩包 |
+
+APK 是维护者签名的独立安装包，按 Android 提示允许浏览器或文件管理器安装此来源即可。iPhone 请使用网页版。安装包构建和签名已检查，尚未进行 Android 真机验收。
+
+两种版本的最高分分别保存在各自设备与应用中，不自动同步；卸载或清除应用数据会清除安卓版记录。网页版首次打开需联网，APK 游玩不需要联网权限。
 
 <img src="docs/images/gameplay.png" alt="解压液滴小游戏：悬挂液滴、随机挡板与反弹瞄准线" width="300">
 
-## 运行
+## 本地运行源码
 
 安装 Node.js 后，在工程目录运行：
 
@@ -95,7 +107,11 @@ tools/serve.js             本地预览服务
 tools/build-web.js         构建可直接部署的静态网页
 tools/make-audio.js         从现有裁切源重建声音
 tests/                     基本模拟、计分和旧微信入口检查
-game.js / game.json        保留的微信兼容入口（当前以网页为主）
+android/                   Android 离线外壳、图标、Gradle 构建工程
+tools/sync-android.js      将网页版与音效同步进 APK
+tools/sign-android.js      使用本地私有签名密钥签名安装包
+docs/android.md            安卓构建、签名与发布说明
+game.js / game.json        保留的历史微信兼容入口
 docs/wechat.md             历史微信原型说明
 outputs/                   本地截图、检查记录、交付包
 ```
@@ -109,12 +125,14 @@ npm test
 npm run build
 ```
 
-静态网站生成到 `dist/`，仅含网页所需文件。可部署到 GitHub Pages 等静态站点，所有资源使用相对地址，支持仓库子路径。GitHub 仓库展示源码；本地试玩请按上方说明启动预览。
+静态网站生成到 `dist/`，仅含网页所需文件。所有资源使用相对地址，支持 GitHub Pages 仓库子路径。Android 构建会自动同步此目录的游戏与音效，详见 [Android 构建说明](docs/android.md)。
 
-仓库包含自动检查和构建工作流。若需发布网页，可在仓库 Settings → Pages 中选择 GitHub Actions，再手动运行工作流；普通源码推送只检查和构建。
+推送到 main 时，GitHub Actions 自动检查并发布网页版，同时构建可供开发者检查的 debug APK。面向玩家的维护者签名安装包发布在 Releases；签名私钥不进入源码仓库。
 
 本版做了基本逻辑检查，包括分数段换场、预告避让、快速小滴和圆角反弹、瞄准折返、借板奖励以及脱落液体的质量守恒；浏览器简短检查了障碍预告、实际点击发射反弹、换场、玩法说明和重置。没有进行完整设备兼容性或长时间人工验收。实际难度、手感与具体问题由后续试玩反馈调整。
 
 ## 许可与音效
 
 软件代码采用 [MIT 许可](LICENSE)。音频与代码分开说明，见 [音效许可](audio/LICENSE.md)。音频来自维护者提供并确认可以公开再分发的参考录音，仓库只包含裁切样本和处理后的游戏音效。
+
+Android 外壳依赖与构建工具的许可见 [第三方声明](THIRD_PARTY_NOTICES.md)。

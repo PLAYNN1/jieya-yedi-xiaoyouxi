@@ -1,0 +1,12 @@
+{
+  "name": "解压液滴小游戏",
+  "short_name": "解压液滴",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#edf3f1",
+  "theme_color": "#f7faf9",
+  "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

@@ -4,14 +4,16 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
   <meta name="description" content="无关卡的液滴解压小游戏。融合、混色、悬挂、坠落，慢慢积累每一分。">
   <meta name="theme-color" content="#f7faf9">
+  <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="解压液滴">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml"><link rel="manifest" href="manifest.webmanifest">
   <title>解压液滴小游戏 · YEDI</title>
   <style>
-    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#edf3f1}
-    body{display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#edf3f1;overscroll-behavior:none}
+    body{display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif;height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
     canvas{display:block;width:100%;height:100%;touch-action:none;outline:none;-webkit-user-select:none;user-select:none}
     canvas:focus-visible{outline:2px solid #82959d;outline-offset:-3px}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-    #stage{width:100%;height:100%;max-width:620px}
+    #stage{width:100%;height:100%;max-width:620px;-webkit-tap-highlight-color:transparent}
   </style>
 </head>
 <body><main id="stage"><canvas id="game" tabindex="0" aria-label="YEDI 无尽液滴。随机颜色，同色融合，异色向下悬挂并遮挡。点按发射，长按连续，拖动借墙瞄准。空格发射，C调色，Escape暂停，R重新开始，M静音，P设置，H玩法。"></canvas><p id="status" class="sr-only" aria-live="polite"></p></main>

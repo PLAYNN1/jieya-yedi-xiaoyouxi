@@ -1,0 +1,33 @@
+apply plugin: 'com.android.application'
+
+def gamePackage = new groovy.json.JsonSlurper().parse(file('../../package.json'))
+android {
+    namespace 'io.github.playnn1.yedi'
+    compileSdk 36
+    defaultConfig {
+        applicationId 'io.github.playnn1.yedi'
+        minSdk 26
+        targetSdk 36
+        versionCode 10301
+        versionName gamePackage.version
+    }
+    buildFeatures { buildConfig true }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    buildTypes {
+        release { minifyEnabled false }
+    }
+    sourceSets.main.assets.srcDir layout.buildDirectory.dir('generated/gameAssets')
+}
+dependencies { implementation 'androidx.webkit:webkit:1.14.0' }
+
+tasks.register('syncGameAssets', Exec) {
+    workingDir '../..'
+    commandLine 'node', 'tools/sync-android.js'
+    inputs.files(fileTree('../../src'),fileTree('../../audio'),fileTree('../../assets'))
+    inputs.files('../../index.html','../../preview.js','../../manifest.webmanifest','../../LICENSE','../../THIRD_PARTY_NOTICES.md','../../licenses/APACHE-2.0.txt','../../tools/build-web.js','../../tools/sync-android.js')
+    outputs.dir layout.buildDirectory.dir('generated/gameAssets')
+}
+tasks.named('preBuild').configure { dependsOn 'syncGameAssets' }

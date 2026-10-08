@@ -1,4 +1,4 @@
-name: Check, build, and manually deploy website
+name: Check, build, and deploy website
 on:
   push:
     branches: [main]
@@ -29,7 +29,7 @@ jobs:
           path: dist
 
   deploy:
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     permissions:

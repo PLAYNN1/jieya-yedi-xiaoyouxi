@@ -11,3 +11,10 @@ Thumbs.db
 !.env.example
 *.pem
 *.key
+.private/
+.gradle/
+android/.gradle/
+android/local.properties
+android/**/build/
+*.jks
+*.keystore
